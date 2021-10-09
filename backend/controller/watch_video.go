@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"net/http"
-	"time"
 	"github.com/chanwit/sa-64-example/entity"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
 )
 
 // POST /watch_videos
@@ -27,7 +27,6 @@ func CreateWatchVideo(c *gin.Context) {
 		return
 	}
 
-
 	if tx := entity.DB().Where("id = ?", watchvideo.PlaylistID).First(&playlist); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "playlist not found"})
 		return
@@ -38,12 +37,15 @@ func CreateWatchVideo(c *gin.Context) {
 		return
 	}
 
+	wv := WatchVideo{Resolution: resolution,
+		Video:    video,
+		Playlist: playlist}
 
-	if err := entity.DB().Create(&watchvideo).Error; err != nil {
+	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": watchvideo})
+	c.JSON(http.StatusOK, gin.H{"data": wv})
 }
 
 // GET /watchvideo/:id
