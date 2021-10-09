@@ -36,7 +36,7 @@ func CreateWatchVideo(c *gin.Context) {
 		return
 	}
 
-	wv := WatchVideo{
+	wv := entity.WatchVideo{
 		WatchedTime: now,
 		Resolution: resolution,
 		Video:    video,
