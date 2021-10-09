@@ -9,13 +9,12 @@ import (
 
 // POST /watch_videos
 func CreateWatchVideo(c *gin.Context) {
+	now := time.Now()
+	
 	var watchvideo entity.WatchVideo
 	var resolution entity.Resolution
 	var playlist entity.Playlist
 	var video entity.Video
-
-	now := time.Now()
-	watchvideo.WatchedTime = now
 
 	if err := c.ShouldBindJSON(&watchvideo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -37,7 +36,9 @@ func CreateWatchVideo(c *gin.Context) {
 		return
 	}
 
-	wv := WatchVideo{Resolution: resolution,
+	wv := WatchVideo{
+		WatchedTime: now,
+		Resolution: resolution,
 		Video:    video,
 		Playlist: playlist}
 
