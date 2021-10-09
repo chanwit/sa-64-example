@@ -2,7 +2,7 @@ package entity
 
 import (
 	"fmt"
-  "time"
+	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -35,18 +35,17 @@ func SetupDatabase() {
 		Name:  "Chanwit",
 		Email: "chanwit@gmail.com",
 	})
-  db.Model(&User{}).Create(&User{
-    Name:  "Name",
-    Email: "name@example.com",
-  })
+	db.Model(&User{}).Create(&User{
+		Name:  "Name",
+		Email: "name@example.com",
+	})
 
 	var chanwit User
-  var name User
+	var name User
 	db.Raw("SELECT * FROM users WHERE email = ?", "chanwit@gmail.com").Scan(&chanwit)
-  db.Raw("SELECT * FROM users WHERE email = ?", "name@example.com").Scan(&name)
+	db.Raw("SELECT * FROM users WHERE email = ?", "name@example.com").Scan(&name)
 
-
-  // --- Video Data
+	// --- Video Data
 	saLecture4 := Video{
 		Name:  "SA Lecture 4",
 		Url:   "https://youtu.be/123",
@@ -54,58 +53,55 @@ func SetupDatabase() {
 	}
 	db.Model(&Video{}).Create(&saLecture4)
 
-  howTo := Video{
-    Name:  "How to ...",
-    Url:   "https://youtu.be/456",
-    Owner: chanwit,
-  }
-  db.Model(&Video{}).Create(&howTo)
+	howTo := Video{
+		Name:  "How to ...",
+		Url:   "https://youtu.be/456",
+		Owner: chanwit,
+	}
+	db.Model(&Video{}).Create(&howTo)
 
-
-  helloWorld := Video{
+	helloWorld := Video{
 		Name:  "Hello World with C",
 		Url:   "https://youtu.be/789",
 		Owner: name,
 	}
 	db.Model(&Video{}).Create(&helloWorld)
 
+	// Resolution Data
+	res360p := Resolution{
+		Value: "360p",
+	}
+	db.Model(&Resolution{}).Create(&res360p)
 
-  // Resolution Data
-  res360p := Resolution{
-    Value: "360p",
-  }
-  db.Model(&Resolution{}).Create(&res360p)
+	res480p := Resolution{
+		Value: "480p",
+	}
+	db.Model(&Resolution{}).Create(&res480p)
 
-  res480p := Resolution{
-    Value: "480p",
-  }
-  db.Model(&Resolution{}).Create(&res480p)
+	res720p := Resolution{
+		Value: "720p",
+	}
+	db.Model(&Resolution{}).Create(&res720p)
 
-  res720p := Resolution{
-    Value: "720p",
-  }
-  db.Model(&Resolution{}).Create(&res720p)
-
-  watchedPlayListOfChanwit := Playlist{
-    Title: "Watched",
-    Owner: chanwit,
-  }
-  db.Model(&Playlist{}).Create(&watchedPlayListOfChanwit)
+	watchedPlayListOfChanwit := Playlist{
+		Title: "Watched",
+		Owner: chanwit,
+	}
+	db.Model(&Playlist{}).Create(&watchedPlayListOfChanwit)
 
 	musicPlayListOfChanwit := Playlist{
 		Title: "Music",
 		Owner: chanwit,
 	}
-  db.Model(&Playlist{}).Create(&musicPlayListOfChanwit)
+	db.Model(&Playlist{}).Create(&musicPlayListOfChanwit)
 
-  watchedPlayListOfName := Playlist{
-    Title: "Watched",
-    Owner: name,
-  }
-  db.Model(&Playlist{}).Create(&watchedPlayListOfName)
+	watchedPlayListOfName := Playlist{
+		Title: "Watched",
+		Owner: name,
+	}
+	db.Model(&Playlist{}).Create(&watchedPlayListOfName)
 
-
-  // watch 1
+	// watch 1
 	db.Model(&WatchVideo{}).Create(&WatchVideo{
 		Playlist:    watchedPlayListOfChanwit,
 		Video:       saLecture4,
@@ -119,13 +115,13 @@ func SetupDatabase() {
 		WatchedTime: time.Now(),
 		Resolution:  res480p,
 	})
-  // watch 3
-  db.Model(&WatchVideo{}).Create(&WatchVideo{
-    Playlist:    watchedPlayListOfChanwit,
-    Video:       helloWorld,
-    WatchedTime: time.Now(),
-    Resolution:  res720p,
-  })
+	// watch 3
+	db.Model(&WatchVideo{}).Create(&WatchVideo{
+		Playlist:    watchedPlayListOfChanwit,
+		Video:       helloWorld,
+		WatchedTime: time.Now(),
+		Resolution:  res720p,
+	})
 
 	//
 	// === Query
