@@ -10,21 +10,10 @@ import (
 // POST /watch_videos
 func CreateWatchVideo(c *gin.Context) {
 	var watchvideo entity.WatchVideo
+	var resolution entity.Resolution
+	var playlist entity.Playlist
+	var video entity.Video
 
-	if err := entity.DB().Preload("Owner").Raw("SELECT * FROM videos WHERE id = ?", watchvideo.VideoID).Find(&watchvideo.Video).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := entity.DB().Preload("Owner").Raw("SELECT * FROM resolutions WHERE id = ?", watchvideo.ResolutionID).Find(&watchvideo.Resolution).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := entity.DB().Preload("Owner").Raw("SELECT * FROM playlists WHERE id = ?", watchvideo.PlaylistID).Find(&watchvideo.Playlist).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 	now := time.Now()
 	watchvideo.WatchedTime = now
 
@@ -32,6 +21,23 @@ func CreateWatchVideo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if tx := entity.DB().Where("id = ?", watchvideo.ResolutionID).First(&resolution); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "resolution not found"})
+		return
+	}
+
+
+	if tx := entity.DB().Where("id = ?", watchvideo.PlaylistID).First(&playlist); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "playlist not found"})
+		return
+	}
+
+	if tx := entity.DB().Where("id = ?", watchvideo.VideoID).First(&video); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		return
+	}
+
 
 	if err := entity.DB().Create(&watchvideo).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
