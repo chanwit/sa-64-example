@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/chanwit/sa-64-example/entity"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // GET /users
@@ -76,10 +77,10 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 	/*
-	if err := entity.DB().Where("id = ?", id).Delete(&entity.User{}).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}*/
+		if err := entity.DB().Where("id = ?", id).Delete(&entity.User{}).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}*/
 
 	c.JSON(http.StatusOK, gin.H{"data": id})
 }
