@@ -6,9 +6,8 @@
 
 อธิบาย Code ในส่วนของการ ค้นหา สร้าง โยง และบันทึก WatchVideo ตาม use case
 
+```golang
 // POST /watch_videos
-
-```sh
 func CreateWatchVideo(c \*gin.Context) {
 
     var watchvideo entity.WatchVideo
