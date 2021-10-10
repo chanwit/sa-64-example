@@ -8,7 +8,7 @@
 
 ```golang
 // POST /watch_videos
-func CreateWatchVideo(c \*gin.Context) {
+func CreateWatchVideo(c *gin.Context) {
 
     var watchvideo entity.WatchVideo
     var resolution entity.Resolution
@@ -40,10 +40,10 @@ func CreateWatchVideo(c \*gin.Context) {
     }
     // 12: สร้าง WatchVideo
     wv := entity.WatchVideo{
-    	Resolution:      resolution,			// โยงความสัมพันธ์กับ Entity Resolution
-    	Video:             video,				// โยงความสัมพันธ์กับ Entity Video
-    	Playlist:           playlist,			// โยงความสัมพันธ์กับ Entity Playlist
-    	WatchedTime: watchvideo.WatchedTime,	// ตั้งค่าฟิลด์ watchedTime
+    	Resolution:      resolution,            // โยงความสัมพันธ์กับ Entity Resolution
+    	Video:             video,               // โยงความสัมพันธ์กับ Entity Video
+    	Playlist:           playlist,           // โยงความสัมพันธ์กับ Entity Playlist
+    	WatchedTime: watchvideo.WatchedTime,    // ตั้งค่าฟิลด์ watchedTime
     }
 
     // 13: บันทึก
