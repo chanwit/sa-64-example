@@ -165,9 +165,14 @@ function WatchVideoCreate() {
       WatchedTime: selectedDate,
     };
 
+    console.log(data)
+
     const requestOptionsPost = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     };
 
@@ -175,8 +180,10 @@ function WatchVideoCreate() {
       .then((response) => response.json())
       .then((res) => {
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
         }
       });
