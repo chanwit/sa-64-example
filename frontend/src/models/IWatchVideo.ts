@@ -3,7 +3,7 @@ import { ResolutionsInterface } from "./IResolution";
 import { VideosInterface } from "./IVideo";
 
 export interface WatchVideoInterface {
-  ID: string,
+  ID: number,
   WatchedTime: Date,
   ResolutionID: number,
   Resolution: ResolutionsInterface,

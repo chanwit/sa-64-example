@@ -55,7 +55,7 @@ function WatchVideoCreate() {
   const [users, setUsers] = useState<UsersInterface[]>([]);
   const [videos, setVideos] = useState<VideosInterface[]>([]);
   const [resolutions, setResolutions] = useState<ResolutionsInterface[]>([]);
-  const [playlists, setPlaylists] = useState<PlaylistsInterface[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistsInterface>();
   const [watchVideo, setWatchVideo] = useState<Partial<WatchVideoInterface>>(
     {}
   );
@@ -66,7 +66,10 @@ function WatchVideoCreate() {
   const apiUrl = "http://localhost:8080";
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
   };
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -129,9 +132,11 @@ function WatchVideoCreate() {
   };
 
   const getPlaylist = async () => {
-    fetch(`${apiUrl}/playlists`, requestOptions)
+    let uid = localStorage.getItem("uid");
+    fetch(`${apiUrl}/playlist/watched/user/${uid}`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        watchVideo.PlaylistID = res.data.ID
         if (res.data) {
           setPlaylists(res.data);
         } else {
@@ -255,6 +260,7 @@ function WatchVideoCreate() {
                 native
                 value={watchVideo.PlaylistID}
                 onChange={handleChange}
+                disabled
                 inputProps={{
                   name: "PlaylistID",
                 }}
@@ -262,11 +268,15 @@ function WatchVideoCreate() {
                 <option aria-label="None" value="">
                   กรุณาเลือกเพลย์ลิสต์
                 </option>
-                {playlists.map((item: PlaylistsInterface) => (
+                <option value={playlists?.ID} key={playlists?.ID}>
+                  {playlists?.Title}
+                </option>
+
+                {/* {playlists.map((item: PlaylistsInterface) => (
                   <option value={item.ID} key={item.ID}>
                     {item.Title}
                   </option>
-                ))}
+                ))} */}
               </Select>
             </FormControl>
           </Grid>

@@ -5,6 +5,7 @@ import (
 
 	"github.com/chanwit/sa-64-example/entity"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // GET /users
@@ -39,6 +40,14 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// เข้ารหัสลับรหัสผ่านที่ผู้ใช้กรอกก่อนบันทึกลงฐานข้อมูล
+	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+		return
+	}
+	user.Password = string(bytes)
 
 	if err := entity.DB().Create(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

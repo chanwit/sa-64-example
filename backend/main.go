@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/chanwit/sa-64-example/controller"
 	"github.com/chanwit/sa-64-example/entity"
+	"github.com/chanwit/sa-64-example/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,40 +13,53 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	api := r.Group("")
+	{
+		protected := api.Use(middlewares.Authorizes())
+		{
+			// User Routes
+			protected.GET("/users", controller.ListUsers)
+			protected.GET("/user/:id", controller.GetUser)
+			protected.PATCH("/users", controller.UpdateUser)
+			protected.DELETE("/users/:id", controller.DeleteUser)
+
+			// Video Routes
+			protected.GET("/videos", controller.ListVideos)
+			protected.GET("/video/:id", controller.GetVideo)
+			protected.POST("/videos", controller.CreateVideo)
+			protected.PATCH("/videos", controller.UpdateVideo)
+			protected.DELETE("/videos/:id", controller.DeleteVideo)
+
+			// Playlist Routes
+			protected.GET("/playlists", controller.ListPlaylists)
+			protected.GET("/playlist/:id", controller.GetPlaylist)
+			protected.GET("/playlist/watched/user/:id", controller.GetPlaylistWatchedByUser)
+			protected.POST("/playlists", controller.CreatePlaylist)
+			protected.PATCH("/playlists", controller.UpdatePlaylist)
+			protected.DELETE("/playlists/:id", controller.DeletePlaylist)
+
+			// Resolution Routes
+			protected.GET("/resolutions", controller.ListResolutions)
+			protected.GET("/resolution/:id", controller.GetResolution)
+			protected.POST("/resolutions", controller.CreateResolution)
+			protected.PATCH("/resolutions", controller.UpdateResolution)
+			protected.DELETE("/resolutions/:id", controller.DeleteResolution)
+
+			// WatchVideo Routes
+			protected.GET("/watch_videos", controller.ListWatchVideos)
+			protected.GET("/watchvideo/:id", controller.GetWatchVideo)
+			protected.POST("/watch_videos", controller.CreateWatchVideo)
+			protected.PATCH("/watch_videos", controller.UpdateWatchVideo)
+			protected.DELETE("/watchvideors/:id", controller.DeleteWatchVideo)
+
+		}
+	}
+
 	// User Routes
-	r.GET("/users", controller.ListUsers)
-	r.GET("/user/:id", controller.GetUser)
 	r.POST("/users", controller.CreateUser)
-	r.PATCH("/users", controller.UpdateUser)
-	r.DELETE("/users/:id", controller.DeleteUser)
 
-	// Video Routes
-	r.GET("/videos", controller.ListVideos)
-	r.GET("/video/:id", controller.GetVideo)
-	r.POST("/videos", controller.CreateVideo)
-	r.PATCH("/videos", controller.UpdateVideo)
-	r.DELETE("/videos/:id", controller.DeleteVideo)
-
-	// Playlist Routes
-	r.GET("/playlists", controller.ListPlaylists)
-	r.GET("/playlist/:id", controller.GetPlaylist)
-	r.POST("/playlists", controller.CreatePlaylist)
-	r.PATCH("/playlists", controller.UpdatePlaylist)
-	r.DELETE("/playlists/:id", controller.DeletePlaylist)
-
-	// Resolution Routes
-	r.GET("/resolutions", controller.ListResolutions)
-	r.GET("/resolution/:id", controller.GetResolution)
-	r.POST("/resolutions", controller.CreateResolution)
-	r.PATCH("/resolutions", controller.UpdateResolution)
-	r.DELETE("/resolutions/:id", controller.DeleteResolution)
-
-	// WatchVideo Routes
-	r.GET("/watch_videos", controller.ListWatchVideos)
-	r.GET("/watchvideo/:id", controller.GetWatchVideo)
-	r.POST("/watch_videos", controller.CreateWatchVideo)
-	r.PATCH("/watch_videos", controller.UpdateWatchVideo)
-	r.DELETE("/watchvideors/:id", controller.DeleteWatchVideo)
+	// Authentication Routes
+	r.POST("/login", controller.Login)
 
 	// Run the server
 	r.Run()

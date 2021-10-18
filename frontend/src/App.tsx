@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
-import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
   createStyles,
   makeStyles,
@@ -21,6 +21,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import Button from "@material-ui/core/Button";
 
 import HomeIcon from "@material-ui/icons/Home";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
@@ -31,6 +32,7 @@ import Users from "./components/Users";
 import UserCreate from "./components/UserCreate";
 import WatchVideos from "./components/WatchVideos";
 import WatchVideoCreate from "./components/WatchVideoCreate";
+import SignIn from "./components/SignIn";
 
 const drawerWidth = 240;
 
@@ -38,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
+    },
+    title: {
+      flexGrow: 1,
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -95,6 +100,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    a: {
+      textDecoration: "none",
+      color: "inherit",
+    },
   })
 );
 
@@ -102,7 +111,7 @@ export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+  const [token, setToken] = React.useState<String>("");
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -117,67 +126,91 @@ export default function MiniDrawer() {
     { name: "การเข้าชมวีดีโอ", icon: <YouTubeIcon />, path: "/watch_videos" },
   ];
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setToken(token);
+    }
+  }, []);
+
+  if (!token) {
+    return <SignIn />;
+  }
+
+  const signout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
   return (
     <div className={classes.root}>
       <Router>
         <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
+        {token && (
+          <>
+            <AppBar
+              position="fixed"
+              className={clsx(classes.appBar, {
+                [classes.appBarShift]: open,
               })}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              System Analysis and Design
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          </div>
-          <Divider />
-          <List>
-            {menu.map((item, index) => (
-              <Link to={item.path} key={item.name}>
-                <ListItem button>
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.name} />
-                </ListItem>
-              </Link>
-            ))}
-          </List>
-        </Drawer>
+              <Toolbar>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  className={clsx(classes.menuButton, {
+                    [classes.hide]: open,
+                  })}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" className={classes.title}>
+                  System Analysis and Design
+                </Typography>
+                <Button color="inherit" onClick={signout}>
+                  ออกจากระบบ
+                </Button>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              variant="permanent"
+              className={clsx(classes.drawer, {
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open,
+              })}
+              classes={{
+                paper: clsx({
+                  [classes.drawerOpen]: open,
+                  [classes.drawerClose]: !open,
+                }),
+              }}
+            >
+              <div className={classes.toolbar}>
+                <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === "rtl" ? (
+                    <ChevronRightIcon />
+                  ) : (
+                    <ChevronLeftIcon />
+                  )}
+                </IconButton>
+              </div>
+              <Divider />
+              <List>
+                {menu.map((item, index) => (
+                  <Link to={item.path} key={item.name} className={classes.a}>
+                    <ListItem button>
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.name} />
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Drawer>
+          </>
+        )}
+
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <div>

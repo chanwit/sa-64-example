@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -31,13 +32,17 @@ func SetupDatabase() {
 
 	db = database
 
+	password, err := bcrypt.GenerateFromPassword([]byte("123456"), 14)
+
 	db.Model(&User{}).Create(&User{
-		Name:  "Chanwit",
-		Email: "chanwit@gmail.com",
+		Name:     "Chanwit",
+		Email:    "chanwit@gmail.com",
+		Password: string(password),
 	})
 	db.Model(&User{}).Create(&User{
-		Name:  "Name",
-		Email: "name@example.com",
+		Name:     "Name",
+		Email:    "name@example.com",
+		Password: string(password),
 	})
 
 	var chanwit User
@@ -83,6 +88,7 @@ func SetupDatabase() {
 	}
 	db.Model(&Resolution{}).Create(&res720p)
 
+	// PlayList Data
 	watchedPlayListOfChanwit := Playlist{
 		Title: "Watched",
 		Owner: chanwit,

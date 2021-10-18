@@ -65,7 +65,10 @@ function UserCreate() {
     const apiUrl = "http://localhost:8080/users";
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     };
 
@@ -131,6 +134,20 @@ function UserCreate() {
                 size="medium"
                 placeholder="กรุณากรอกข้อมูลอีเมล"
                 value={user.Email || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <p>รหัสผ่าน</p>
+            <FormControl fullWidth variant="outlined">
+              <TextField
+                id="Password"
+                variant="outlined"
+                type="password"
+                size="medium"
+                placeholder="กรุณากรอกรหัสผ่าน"
+                value={user.Password || ""}
                 onChange={handleInputChange}
               />
             </FormControl>

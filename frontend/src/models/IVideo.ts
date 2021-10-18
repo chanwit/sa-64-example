@@ -1,5 +1,5 @@
 export interface VideosInterface {
-    ID: string,
+    ID: number,
     Name: string,
     Url: string,
     OwnerID: number,

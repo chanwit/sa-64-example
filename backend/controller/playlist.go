@@ -34,6 +34,18 @@ func GetPlaylist(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": playlist})
 }
 
+// GET /playlist/watched/user/:id
+func GetPlaylistWatchedByUser(c *gin.Context) {
+	var playlist entity.Playlist
+	id := c.Param("id")
+	if err := entity.DB().Preload("Owner").Raw("SELECT * FROM playlists WHERE owner_id = ? AND title = ?", id, "Watched").Find(&playlist).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": playlist})
+}
+
 // GET /playlists
 func ListPlaylists(c *gin.Context) {
 	var playlists []entity.Playlist

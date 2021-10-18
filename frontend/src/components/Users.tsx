@@ -36,13 +36,15 @@ function Users() {
     const apiUrl = "http://localhost:8080/users";
     const requestOptions = {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
     };
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        console.log(res.data);
         if (res.data) {
           setUsers(res.data);
         } else {
@@ -88,7 +90,7 @@ function Users() {
                   ลำดับ
                 </TableCell>
                 <TableCell align="center" width="45%">
-                   ชื่อ
+                  ชื่อ
                 </TableCell>
                 <TableCell align="center" width="45%">
                   อีเมล
