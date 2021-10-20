@@ -60,6 +60,7 @@ function UserCreate() {
     let data = {
       Name: user.Name ?? "",
       Email: user.Email ?? "",
+      Password: user.Password ?? "",
     };
 
     const apiUrl = "http://localhost:8080/users";
