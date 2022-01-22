@@ -6,6 +6,8 @@ import (
 	"github.com/chanwit/sa-64-example/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/asaskevich/govalidator"
 )
 
 // GET /users
@@ -48,6 +50,12 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	user.Password = string(bytes)
+
+	// แทรกการ validate ไว้ช่วงนี้ของ controller
+	if _, err := govalidator.ValidateStruct(user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	if err := entity.DB().Create(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
