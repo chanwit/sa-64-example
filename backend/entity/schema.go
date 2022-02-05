@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -48,17 +49,30 @@ type Resolution struct {
 
 type WatchVideo struct {
 	gorm.Model
-	WatchedTime time.Time
+	WatchedTime time.Time `valid:"past~Watched time must be a past date"`
 
 	// ResolutionID ทำหน้าที่เป็น FK
 	ResolutionID *uint
-	Resolution   Resolution `gorm:"references:id"`
+	Resolution   Resolution `gorm:"references:id" valid:"-"` 
 
 	// PlaylistID ทำหน้าที่เป็น FK
 	PlaylistID *uint
-	Playlist   Playlist `gorm:"references:id"`
+	Playlist   Playlist `gorm:"references:id" valid:"-"` 
 
 	// VideoID ทำหน้าที่เป็น FK
 	VideoID *uint
-	Video   Video `gorm:"references:id"`
+	Video   Video `gorm:"references:id" valid:"-"`
+}
+
+func init() {
+	govalidator.CustomTypeTagMap.Set("past", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		now := time.Now()
+		return now.After(t)
+	})
+	govalidator.CustomTypeTagMap.Set("future", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		now := time.Now()
+		return now.Before(time.Time(t))
+	})
 }

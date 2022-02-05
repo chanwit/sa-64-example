@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/chanwit/sa-64-example/entity"
 	"github.com/gin-gonic/gin"
 )
@@ -44,6 +45,12 @@ func CreateWatchVideo(c *gin.Context) {
 		Video:       video,                  // โยงความสัมพันธ์กับ Entity Video
 		Playlist:    playlist,               // โยงความสัมพันธ์กับ Entity Playlist
 		WatchedTime: watchvideo.WatchedTime, // ตั้งค่าฟิลด์ watchedTime
+	}
+
+	// ขั้นตอนการ validate ที่นำมาจาก unit test
+	if _, err := govalidator.ValidateStruct(wv); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 13: บันทึก
